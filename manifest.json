@@ -4,7 +4,9 @@
     "version": "1.0",
     "permissions": ["tabs", "storage", "notifications"],
     "browser_action": {
-        "default_icon": "assets/icon_grey.png"
+        "default_icon": "assets/icon_grey.png",
+        "default_popup": "popup/index.html",
+        "default_title": "MyUSTe Extension"
     },
     "content_scripts": [
         {
