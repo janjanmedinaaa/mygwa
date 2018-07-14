@@ -2,6 +2,10 @@
     "manifest_version": 2,
     "name": "MyUSTe Extension",
     "version": "1.0",
+    "permissions": ["tabs", "storage", "notifications"],
+    "browser_action": {
+        "default_icon": "assets/icon_grey.png"
+    },
     "content_scripts": [
         {
             "matches": [
@@ -9,6 +13,21 @@
                 "http://myuste.ust.edu.ph/student/studentcontrol"
             ],
             "js": ["scripts/myuste_studentcontrol.js"]
+        },
+        {
+            "matches": [
+                "https://myuste.ust.edu.ph/student/myGrades.jsp",
+                "http://myuste.ust.edu.ph/student/myGrades.jsp",
+                "https://myuste.ust.edu.ph/student/myGrades.jsp?*",
+                "http://myuste.ust.edu.ph/student/myGrades.jsp?*"
+            ],
+            "js": [
+                "scripts/myuste_grades.js",
+                "scripts/myuste_stressfilter.js"
+            ]
         }
-    ]
+    ],
+    "background": {
+        "scripts": ["scripts/background.js"]
+    }
 }
