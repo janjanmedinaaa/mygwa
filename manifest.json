@@ -1,5 +1,14 @@
 {
     "manifest_version": 2,
     "name": "MyUSTe Extension",
-    "version": "1.0"
+    "version": "1.0",
+    "content_scripts": [
+        {
+            "matches": [
+                "https://myuste.ust.edu.ph/student/studentcontrol",
+                "http://myuste.ust.edu.ph/student/studentcontrol"
+            ],
+            "js": ["scripts/myuste_studentcontrol.js"]
+        }
+    ]
 }
