@@ -1,4 +1,4 @@
-function stressFilter(){
+function stressFilter(status){
     var tables = document.getElementsByTagName('table');
     var gradesTableId = null;
 
@@ -27,32 +27,31 @@ function stressFilter(){
             var final = tableTr[c]['children'][d+1].innerHTML;
 
             tableTd.push(prelim, final);
-
-            //4, 10, 16, 22
-            if(parseInt(prelim) >= 75){
-                tableTr[c]['children'][d].innerHTML = "PASSED";
-                tableTr[c]['children'][d].style.color = "green";
+            if(status == "on"){
+                if(parseInt(prelim) >= 75){
+                    tableTr[c]['children'][d].innerHTML = "PASSED";
+                    tableTr[c]['children'][d].style.color = "green";
+                }
+                else if(prelim === "&nbsp;"){
+                    tableTr[c]['children'][d].innerHTML = "NO GRADE";
+                }
+                else{
+                    tableTr[c]['children'][d].innerHTML = "FAILED";
+                    tableTr[c]['children'][d].style.color = "red";
+                }
+    
+                if(parseFloat(final) <= 3.0){
+                    tableTr[c]['children'][d+1].innerHTML = "PASSED";
+                    tableTr[c]['children'][d+1].style.color = "green";
+                }
+                else if(final === "&nbsp;"){
+                    tableTr[c]['children'][d+1].innerHTML = "NO GRADE";
+                }
+                else{
+                    tableTr[c]['children'][d+1].innerHTML = "FAILED";
+                    tableTr[c]['children'][d+1].style.color = "red";
+                }
             }
-            else if(prelim === "&nbsp;"){
-                tableTr[c]['children'][d].innerHTML = "NO GRADE";
-            }
-            else{
-                tableTr[c]['children'][d].innerHTML = "FAILED";
-                tableTr[c]['children'][d].style.color = "red";
-            }
-
-            if(parseFloat(final) <= 3.0){
-                tableTr[c]['children'][d+1].innerHTML = "PASSED";
-                tableTr[c]['children'][d+1].style.color = "green";
-            }
-            else if(final === "&nbsp;"){
-                tableTr[c]['children'][d+1].innerHTML = "NO GRADE";
-            }
-            else{
-                tableTr[c]['children'][d+1].innerHTML = "FAILED";
-                tableTr[c]['children'][d+1].style.color = "red";
-            }
-
             d += 6;
         }
 
@@ -62,4 +61,13 @@ function stressFilter(){
     return tableFinalData;
 }
 
-console.log(stressFilter());
+// console.log(stressFilter());
+
+chrome.runtime.onMessage.addListener((message, sender, response) => {
+    if(message.type == "pressure-filter-on"){
+        stressFilter("on");
+    }
+
+    console.log(message);
+    response("Received Message");
+})
