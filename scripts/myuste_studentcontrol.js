@@ -14,7 +14,7 @@ function capitalize(input){
         output += first + second + " ";
     }
 
-    return output;
+    return output.trim();
 }
 
 function changeProfilePic(image){
@@ -26,19 +26,24 @@ function changeProfilePic(image){
 
 function getDetails(){
     var contents = document.getElementsByClassName('sub_content');
-    var name = capitalize(contents[2].innerHTML.trim()) + capitalize(contents[1].innerHTML.trim());
+    var name = capitalize(contents[2].innerHTML.trim() + " " + contents[1].innerHTML.trim());
 
     return {
-        student_num: contents[0].innerHTML,
+        student_num: contents[0].innerHTML.trim(),
         image: document.getElementById('imageholder').src,
         name: name,
-        course: contents[18].innerHTML,
-        degree: contents[19].innerHTML,
-        college: contents[20].innerHTML,
-        status: contents[21].innerHTML
+        course: capitalize(contents[18].innerHTML),
+        degree: capitalize(contents[19].innerHTML),
+        college: capitalize(contents[20].innerHTML),
+        status: capitalize(contents[21].innerHTML)
     }
 
 }
+
+// chrome.storage.sync.clear(() => {
+//     console.log("reset");
+//     console.log(getDetails());
+// });
 
 changeProfilePic('https://pbs.twimg.com/profile_images/1005130124855951360/tBuwWbDx_400x400.jpg');
 
