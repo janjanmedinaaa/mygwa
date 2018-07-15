@@ -11,10 +11,11 @@ window.onload = () => {
         return output;
     }
 
-    chrome.storage.sync.get(['data', 'toggle'], (response) => { 
+    chrome.storage.sync.get(['data', 'semesters', 'semsync'], (response) => { 
         var name = document.getElementsByClassName('user-name');
         var degree = document.getElementsByClassName('user-degree');
         var image = document.getElementById('profile-picture');
+        var insync = document.getElementById('insync');
 
         if(!validate(response.data)){
             name[0].innerHTML = "Hi User!";
@@ -24,6 +25,10 @@ window.onload = () => {
             name[0].innerHTML = response.data.name;
             degree[0].innerHTML = response.data.degree;
             image.src = response.data.image;
+        }
+
+        if(validate(response.semesters)){
+            insync.innerHTML = response.semsync.length + "/" + response.semesters.length;
         }
     });
 }
