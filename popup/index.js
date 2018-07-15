@@ -1,13 +1,24 @@
 window.onload = () => {
+    var switchToggle = document.getElementById('switch');
 
-    chrome.storage.sync.get(['data'], (response) => { 
+    function validate(input){
+        let output = true;
+    
+        if(input == undefined || input == "" || input == null){
+            output = false;
+        }
+    
+        return output;
+    }
+
+    chrome.storage.sync.get(['data', 'toggle'], (response) => { 
         var name = document.getElementsByClassName('user-name');
         var degree = document.getElementsByClassName('user-degree');
         var image = document.getElementById('profile-picture');
 
         console.log(name, degree, image);
 
-        if(response.data == undefined || response.data == "" || response.data == null){
+        if(!validate(response.data)){
             name[0].innerHTML = "Hi User!";
             degree[0].innerHTML = "Login first to your MyUSTe Account.";
         }
@@ -15,6 +26,13 @@ window.onload = () => {
             name[0].innerHTML = response.data.name;
             degree[0].innerHTML = response.data.degree;
             image.src = response.data.image;
+        }
+
+        if(!validate(response.toggle)){
+            chrome.storage.sync.set({toggle: false})
+        }
+        else{
+            switchToggle.checked = response.toggle;
         }
     });
 }
@@ -28,34 +46,21 @@ window.addEventListener('load', () => {
     }
 
     switchToggle.onclick = function() {
-        if (switchToggle.checked == true){
+        chrome.tabs.query(params, (tabs) => {
             var msg = {
-                type: "pressure-filter-on",
                 title: "Turn on Pressure Filter",
                 message: "Please turn on Pressure Filter"
             }
 
-            chrome.tabs.query(params, (tabs) => {
-                chrome.tabs.sendMessage(tabs[0].id, msg, (response) => {
-                    console.log(response);
-                });
+            msg['type'] = switchToggle.checked ? "pressure-filter-on" : "pressure-filter-off";
+
+            chrome.tabs.sendMessage(tabs[0].id, msg, (response) => {
+                syncToggle(response);
             });
+        });
+    }
 
-        } 
-        else {
-            var msg = {
-                type: "pressure-filter-off",
-                title: "Turn off Pressure Filter",
-                message: "Please turn off Pressure Filter"
-            }
-
-            chrome.tabs.query(params, (tabs) => {
-                chrome.tabs.sendMessage(tabs[0].id, msg, (response) => {
-                    console.log(response);
-                });
-            });
-        }
-
-        console.log(switchToggle.checked);
+    function syncToggle(status){
+        chrome.storage.sync.set({toggle: status});
     }
 })
