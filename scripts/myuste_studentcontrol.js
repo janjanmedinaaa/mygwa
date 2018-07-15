@@ -50,6 +50,8 @@ function getDetails(){
 
 }
 
+// chrome.storage.sync.clear();
+
 chrome.storage.sync.get(['data'], (response) => {
     if(!validate(response.data)){
         chrome.storage.sync.set({data: getDetails()}, () => {

@@ -230,3 +230,5 @@ chrome.storage.sync.get(['semsync'], (response) => {
         }
     }
 })
+
+chrome.storage.sync.set({semview: currentSemesterView()});

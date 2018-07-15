@@ -62,7 +62,7 @@ function filter(prelim, final){
 
 function unfilter(prelim, final, c){
     let currentsem = currentSemesterView();
-
+    
     chrome.storage.sync.get([currentsem], (response) => {
         let userData = response[currentsem]['data']['details']['userData'];
 
