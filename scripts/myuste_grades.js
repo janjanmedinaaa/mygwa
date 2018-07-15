@@ -1,3 +1,13 @@
+function validate(input){
+    let output = true;
+
+    if(input == undefined || input == "" || input == null){
+        output = false;
+    }
+
+    return output;
+}
+
 function dataScrape(){
     let tables = document.getElementsByTagName('table');
     let gradesTableId = null;
@@ -130,7 +140,7 @@ function GPA(grade){
     return GPA;
 }
 
-function getSemester(){
+function getSemesters(){
     let atags = document.getElementsByTagName('a');
     let aSemesters = [];
 
@@ -154,15 +164,79 @@ function fixSemName(semName){
     return firstCut + "20" + secondCut;
 }
 
-function semDetails(){
+function currentSemesterView(){
     let container = document.getElementById('container_body_right');
     let semText = container.childNodes[7].innerHTML;
     let semId = semText.replace("&nbsp;&nbsp;", "").trim();
 
+    return semId;
+}
+
+function semDetails(){
     return {
-        semId: semId,
+        semId: currentSemesterView(),
         data: computeGrade(getSemGrades(dataScrape()))
     }
 }
 
+// chrome.storage.sync.clear();
+
+chrome.storage.sync.get(['semesters'], (response) => {
+    if(!validate(response.semesters)){
+        chrome.storage.sync.set({semesters: getSemesters()}, () => {
+            console.log("SEMESTERS ADDED");
+        });
+    }
+    else{
+        if(getSemesters().length > response.semesters){
+            chrome.storage.sync.set({semesters: getSemesters()}, () => {
+                console.log("SEMESTERS UP TO DATE");
+            });
+        }
+    }
+
+    console.log(response.semesters);
+})
+
+chrome.storage.sync.get(['semsync'], (response) => {
+    let currentsem = currentSemesterView();
+    let semsync = response.semsync;
+
+    if(!validate(semsync)){
+        chrome.storage.sync.set({semsync: [currentsem]}, () => {
+            console.log(currentsem + " added to semsync.");
+
+            let key = currentsem;
+            let obj = {};
+            obj[key] = semDetails();
+
+            chrome.storage.sync.set(obj, () => {
+                console.log(currentsem + " object created.");
+            });
+        });
+    }
+    else{
+        if(semsync.indexOf(currentsem) < 0){
+            semsync.push(currentsem);
+            chrome.storage.sync.set({semsync: semsync}, () => {
+                console.log(currentsem + " added to semsync.");
+    
+                let key = currentsem;
+                let obj = {};
+                obj[key] = semDetails();
+    
+                chrome.storage.sync.set(obj, () => {
+                    console.log(currentsem + " object created.");
+                });
+            });
+        }
+    }
+
+    console.log(response.semsync);
+})
+
 console.log(semDetails());
+
+chrome.storage.sync.get([currentSemesterView()], (response) => {
+    console.log(response[currentSemesterView()]);
+})
