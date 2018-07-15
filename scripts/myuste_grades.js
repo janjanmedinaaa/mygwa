@@ -1,97 +1,97 @@
-//GWA CALCU
-function GWACalcu(){
-    var tables = document.getElementsByTagName('table');
-    var notCounted = ["PE", "NSTP CWS 1", "NSTP CWS 2"];
-    var gradesTableId = null;
+function dataScrape(){
+    let tables = document.getElementsByTagName('table');
+    let gradesTableId = null;
 
-    var preGrades = [],
-        finGrades = [],
-        tableFinalData = [],
-        tableTr = [],
-        subjects = [],
-        countedSubjects = [];
+    let tableFinalData = [],
+        tableTr = [];
 
-    var units, totalUnits = 0,
-        GWAInitialPre = 0,
-        GWAInitialFin = 0;
-
-    for(var a = 0; a < tables.length; a++){
+    for(let a = 0; a < tables.length; a++){
         if(tables[a].id != "sysem_list" && tables[a].id != "grades_table" && tables[a].id != ""){
             gradesTableId = a;
         }
     }
 
-    var tableInitialData = tables[gradesTableId].rows;
-    var tableDataLength = tableInitialData.length;
+    let tableInitialData = tables[gradesTableId].rows;
+    let tableDataLength = tableInitialData.length;
 
-    for(var b = 0; b < tableDataLength; b++){
+    for(let b = 0; b < tableDataLength; b++){
         tableTr.push(tableInitialData[b]);
     }
 
-    for(var c = 0; c < tableTr.length; c++){
+    for(let c = 0; c < tableTr.length; c++){
 
-        var tableTd = [];
-        for(var d = 0; d < tableTr[c]['children'].length; d++){
+        let tableTd = [];
+        for(let d = 0; d < tableTr[c]['children'].length; d++){
             tableTd.push(tableTr[c]['children'][d].innerHTML);
         }
 
         tableFinalData.push(tableTd);
     }
 
-    //PRELIMS (MOSTLY RAW GRADE NILALAGAY)
-    for(var e = 1; e < tableFinalData.length; e++){
-        subjects.push([tableFinalData[e][0], tableFinalData[e][1]]);
-        units = (parseInt(tableFinalData[e][2]) + parseInt(tableFinalData[e][3]));
-        var subjGradePre = (units * parseInt(tableFinalData[e][4]));
-        preGrades.push([units, parseFloat(tableFinalData[e][4])]);
+    return tableFinalData;
+}
 
-        if(notCounted.indexOf(tableFinalData[e][0]) < 0){
-            totalUnits += units;
-        }
+function getSemGrades(userData){
+    let notCounted = ["PE", "NSTP CWS 1", "NSTP CWS 2"];
 
-        if(!isNaN(subjGradePre) && notCounted.indexOf(tableFinalData[e][0]) < 0){
-            GWAInitialPre += subjGradePre;
-        }
-    }
+    let preGrades = [],
+        finGrades = [],
+        subjects = [];
 
-    totalUnits = 0;
-    //FINALS (MOSTLY YUNG PINAKAFINAL TALAGA)
-    for(var f = 1; f < tableFinalData.length; f++){
-        units = (parseInt(tableFinalData[f][2]) + parseInt(tableFinalData[f][3]));
-        var subjGradeFin = (units * parseFloat(tableFinalData[f][5]));
-        finGrades.push([units, parseFloat(tableFinalData[f][5])]);
+    let totalUnits = 0;
 
-        if(notCounted.indexOf(tableFinalData[f][0]) < 0){
-            totalUnits += units;
-            countedSubjects.push([tableFinalData[f][0], tableFinalData[f][1]]);
-        }
+    //GET PRELIMS AND FINALS
+    for(let e = 1; e < userData.length; e++){
+        let subjCode = userData[e][0];
+        let subjName = userData[e][1];
+        let subjUnits = parseInt(userData[e][2]) + parseInt(userData[e][3]);
+        let prelimScore = parseInt(userData[e][4]);
+        let finalScore = parseFloat(userData[e][5]);
 
-        if(!isNaN(subjGradeFin) && notCounted.indexOf(tableFinalData[f][0]) < 0){
-            GWAInitialFin += subjGradeFin;
+        if(notCounted.indexOf(subjCode) < 0){
+            subjects.push([subjCode, subjName]);
+            preGrades.push([subjUnits, prelimScore]);
+            finGrades.push([subjUnits, finalScore]);
+
+            totalUnits += subjUnits;
         }
     }
-
-    GWAPre = ((!isNaN(GWAInitialPre) && GWAInitialPre != 0)) 
-            ? GWAInitialPre / totalUnits : 
-            "No Grades Posted yet.";
-
-    GWAFin = ((!isNaN(GWAInitialFin) && GWAInitialFin != 0)) 
-            ? GWAInitialFin / totalUnits : 
-            "No Grades Posted yet.";
 
     return {
-        Prelims: GWAPre,
-        Finals: GWAFin,
-        Units: totalUnits,
-        PrelimGrades: preGrades,
-        FinalGrades: finGrades,
-        Subjects: subjects,
-        countedSubjects: countedSubjects                                                              
-    };
+        userData: userData,
+        preGrades: preGrades,
+        finGrades: finGrades,
+        subjects: subjects,
+        units: totalUnits
+    }
+}
+
+function computeGrade(details){
+    let prelims = 0, finals = 0;
+
+    let preGrades = details.preGrades,
+        finGrades = details.finGrades,
+        units = details.units,
+        subjects = details.subjects;
+
+    for(let a = 0; a < subjects.length; a++){
+        prelims += preGrades[a][0] * preGrades[a][1];
+        finals += finGrades[a][0] * finGrades[a][1];
+    }
+
+    return {
+        details: details,
+        prelims: finalGradeCheck(prelims, units),
+        finals: finalGradeCheck(finals, units)
+    }
+}
+
+function finalGradeCheck(grade, units){
+    return ((!isNaN(grade) && grade != 0)) ? grade / units : "No Grades Posted yet.";
 }
 
 function GPA(grade){
-    var GPA = 0.00;
+    let GPA = 0.00;
     grade = Math.round(grade);
     
     switch (true){
@@ -130,4 +130,39 @@ function GPA(grade){
     return GPA;
 }
 
-console.log(GWACalcu());
+function getSemester(){
+    let atags = document.getElementsByTagName('a');
+    let aSemesters = [];
+
+    for(let a = 0; a < atags.length; a++){
+        if(atags[a].id == "link_style1"){
+            let children = atags[a]['children'];
+            let inner = children[0].innerHTML;
+
+            aSemesters.push(fixSemName(inner));
+        }
+    }
+
+    return aSemesters;
+}
+
+function fixSemName(semName){
+    let length = semName.length;
+    let firstCut = semName.substring(0, 5);
+    let secondCut = semName.substring(5, length);
+
+    return firstCut + "20" + secondCut;
+}
+
+function semDetails(){
+    let container = document.getElementById('container_body_right');
+    let semText = container.childNodes[7].innerHTML;
+    let semId = semText.replace("&nbsp;&nbsp;", "").trim();
+
+    return {
+        semId: semId,
+        data: computeGrade(getSemGrades(dataScrape()))
+    }
+}
+
+console.log(semDetails());
