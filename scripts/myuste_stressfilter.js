@@ -97,6 +97,6 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 });
 
 chrome.storage.sync.get(['toggle'], (response) => {
-    console.log(response.toggle);
-    filterData(dataScrape(), response.toggle);
+    let status = (response.toggle) ? "on" : "off";
+    filterData(dataScrape(), status);
 });
