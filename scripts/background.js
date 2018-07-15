@@ -14,6 +14,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if(message.type == "notification"){
         notif(message.title, message.message);
     }
-    
-    console.log(message);
 });

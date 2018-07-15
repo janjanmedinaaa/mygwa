@@ -194,8 +194,6 @@ chrome.storage.sync.get(['semesters'], (response) => {
             });
         }
     }
-
-    console.log(response.semesters);
 })
 
 chrome.storage.sync.get(['semsync'], (response) => {
@@ -231,12 +229,4 @@ chrome.storage.sync.get(['semsync'], (response) => {
             });
         }
     }
-
-    console.log(response.semsync);
-})
-
-console.log(semDetails());
-
-chrome.storage.sync.get([currentSemesterView()], (response) => {
-    console.log(response[currentSemesterView()]);
 })

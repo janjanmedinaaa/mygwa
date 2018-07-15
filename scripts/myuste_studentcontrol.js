@@ -1,3 +1,13 @@
+function validate(input){
+    let output = true;
+
+    if(input == undefined || input == "" || input == null){
+        output = false;
+    }
+
+    return output;
+}
+
 function sendMessageNotif(title, message){
     chrome.runtime.sendMessage({type: "notification", title: title, message: message});
 }
@@ -40,15 +50,8 @@ function getDetails(){
 
 }
 
-// chrome.storage.sync.clear(() => {
-//     console.log("reset");
-//     console.log(getDetails());
-// });
-
-changeProfilePic('https://pbs.twimg.com/profile_images/1005130124855951360/tBuwWbDx_400x400.jpg');
-
 chrome.storage.sync.get(['data'], (response) => {
-    if(response.data == undefined || response.data == "" || response.data == null){
+    if(!validate(response.data)){
         chrome.storage.sync.set({data: getDetails()}, () => {
             sendMessageNotif(
                 "MyUSTe Data Saved", 
@@ -59,5 +62,12 @@ chrome.storage.sync.get(['data'], (response) => {
     else{
         var title = `Welcome back ${response.data.name}!`;
         sendMessageNotif(title, "You did great this semester! Just relax :)");
+
+        changeProfilePic(response.data.image);
     }
 });
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+    //ONLY THE IMAGE UPDATES FOR NOW
+    changeProfilePic(changes.data.newValue.image);
+})
