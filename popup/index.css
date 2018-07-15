@@ -58,6 +58,28 @@ body {
 .content-container{
     display: flex;
     flex: 2;
+    flex-direction: column;
+}
+
+.change-pic, .grade-display {
+    display: flex;
+    flex: 1;
+}
+
+.grade-display > div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    font-size: 12px;
+}
+
+.grade-display > div > div {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
 }
 
 .footer-container{
