@@ -16,8 +16,6 @@ window.onload = () => {
         var degree = document.getElementsByClassName('user-degree');
         var image = document.getElementById('profile-picture');
 
-        console.log(name, degree, image);
-
         if(!validate(response.data)){
             name[0].innerHTML = "Hi User!";
             degree[0].innerHTML = "Login first to your MyUSTe Account.";
@@ -27,18 +25,13 @@ window.onload = () => {
             degree[0].innerHTML = response.data.degree;
             image.src = response.data.image;
         }
-
-        if(!validate(response.toggle)){
-            chrome.storage.sync.set({toggle: false})
-        }
-        else{
-            switchToggle.checked = response.toggle;
-        }
     });
 }
 
 window.addEventListener('load', () => {
     var switchToggle = document.getElementById('switch');
+    var urlImageInput = document.getElementById('urlimage');
+    var image = document.getElementById('profile-picture');
 
     var params = {
         active: true,
@@ -62,5 +55,21 @@ window.addEventListener('load', () => {
 
     function syncToggle(status){
         chrome.storage.sync.set({toggle: status});
+    }
+
+    urlImageInput.addEventListener("keyup", function(event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            updateURLImage(urlImageInput.value);
+        }
+    });
+
+    function updateURLImage(input) {
+        chrome.storage.sync.get(['data'], (response) => {
+            response['data']['image'] = input;
+
+            chrome.storage.sync.set({data: response.data});
+            image.src = input;
+        });
     }
 })
