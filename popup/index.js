@@ -11,11 +11,12 @@ window.onload = () => {
         return output;
     }
 
-    chrome.storage.sync.get(['data', 'semesters', 'semsync'], (response) => { 
+    chrome.storage.sync.get(['data', 'semesters', 'semsync', 'semview'], (response) => { 
         var name = document.getElementsByClassName('user-name');
         var degree = document.getElementsByClassName('user-degree');
         var image = document.getElementById('profile-picture');
         var insync = document.getElementById('insync');
+        var semestral = document.getElementById('semestral');
 
         if(!validate(response.data)){
             name[0].innerHTML = "Hi User!";
@@ -29,6 +30,25 @@ window.onload = () => {
 
         if(validate(response.semesters)){
             insync.innerHTML = response.semsync.length + "/" + response.semesters.length;
+        }
+        
+        console.log(response.semview);
+        if(validate(response.semview)){
+            let currentsemview = response.semview;
+
+            chrome.storage.sync.get([currentsemview], (response) => {
+                let finals = response[currentsemview]['data']['finals'];
+                console.log(response[currentsemview]);
+                console.log(finals);
+
+                if(finals == "No Grades Posted yet."){
+                    semestral.innerHTML = finals;
+                    semestral.style.fontSize = 13;
+                }
+                else{
+                    semestral.innerHTML = finals;
+                }
+            });
         }
     });
 }
