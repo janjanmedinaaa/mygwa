@@ -66,6 +66,10 @@ body {
     flex: 1;
 }
 
+.change-pic {
+    padding: 10px 30px;
+}
+
 .grade-display > div {
     display: flex;
     flex-direction: column;
