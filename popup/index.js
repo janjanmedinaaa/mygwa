@@ -1,6 +1,4 @@
 window.onload = () => {
-    var switchToggle = document.getElementById('switch');
-
     function validate(input){
         let output = true;
     
@@ -11,12 +9,16 @@ window.onload = () => {
         return output;
     }
 
-    chrome.storage.sync.get(['data', 'semesters', 'semsync', 'semview'], (response) => { 
+    chrome.storage.sync.get(['data', 'semesters', 'semsync', 'semview', 'toggle'], (response) => { 
         var name = document.getElementsByClassName('user-name');
         var degree = document.getElementsByClassName('user-degree');
         var image = document.getElementById('profile-picture');
         var insync = document.getElementById('insync');
         var semestral = document.getElementById('semestral');
+        var switchToggle = document.getElementById('switch');
+
+        switchToggle.checked = (response.toggle);
+        
 
         if(!validate(response.data)){
             name[0].innerHTML = "Hi User!";
@@ -46,7 +48,7 @@ window.onload = () => {
                     semestral.style.fontSize = 13;
                 }
                 else{
-                    semestral.innerHTML = finals;
+                    semestral.innerHTML = finals.toFixed(2);
                 }
             });
         }
