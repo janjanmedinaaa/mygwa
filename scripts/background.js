@@ -11,7 +11,7 @@ function notif(title, message){
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if(message.type == "notification"){
+    if(message.type == "notification" || message.type == "icon_notification"){
         notif(message.title, message.message);
     }
 });

@@ -115,7 +115,13 @@ window.addEventListener('load', () => {
     function updateURLImage(input) {
         chrome.storage.sync.get(['data'], (response) => {
             response['data']['image'] = input;
+            var msg = {
+                type: "icon_notification",
+                title: "Icon Changed",
+                message: "Your look good here!"
+            }
 
+            chrome.runtime.sendMessage(msg);
             chrome.storage.sync.set({data: response.data});
             image.src = input;
         });
