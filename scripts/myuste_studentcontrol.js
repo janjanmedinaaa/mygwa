@@ -50,8 +50,6 @@ function getDetails(){
 
 }
 
-// chrome.storage.sync.clear();
-
 chrome.storage.sync.get(['data'], (response) => {
     if(!validate(response.data)){
         chrome.storage.sync.set({data: getDetails()}, () => {
@@ -73,3 +71,6 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
     //ONLY THE IMAGE UPDATES FOR NOW
     changeProfilePic(changes.data.newValue.image);
 })
+
+
+// chrome.storage.sync.clear();

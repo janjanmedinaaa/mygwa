@@ -179,8 +179,6 @@ function semDetails(){
     }
 }
 
-// chrome.storage.sync.clear();
-
 chrome.storage.sync.get(['semesters'], (response) => {
     if(!validate(response.semesters)){
         chrome.storage.sync.set({semesters: getSemesters()}, () => {
@@ -196,39 +194,7 @@ chrome.storage.sync.get(['semesters'], (response) => {
     }
 })
 
-chrome.storage.sync.get(['semsync'], (response) => {
-    let currentsem = currentSemesterView();
-    let semsync = response.semsync;
-
-    if(!validate(semsync)){
-        chrome.storage.sync.set({semsync: [currentsem]}, () => {
-            console.log(currentsem + " added to semsync.");
-
-            let key = currentsem;
-            let obj = {};
-            obj[key] = semDetails();
-
-            chrome.storage.sync.set(obj, () => {
-                console.log(currentsem + " object created.");
-            });
-        });
-    }
-    else{
-        if(semsync.indexOf(currentsem) < 0){
-            semsync.push(currentsem);
-            chrome.storage.sync.set({semsync: semsync}, () => {
-                console.log(currentsem + " added to semsync.");
-    
-                let key = currentsem;
-                let obj = {};
-                obj[key] = semDetails();
-    
-                chrome.storage.sync.set(obj, () => {
-                    console.log(currentsem + " object created.");
-                });
-            });
-        }
-    }
-})
-
 chrome.storage.sync.set({semview: currentSemesterView()});
+chrome.storage.sync.set({semviewdetails: semDetails()});
+
+// console.log(semDetails());
