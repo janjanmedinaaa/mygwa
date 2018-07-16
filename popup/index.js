@@ -1,4 +1,27 @@
 window.onload = () => {
+    function overallGrade(semsync){
+        var overall = document.getElementById('overall');
+        var length = semsync.length;
+        var unitsTotal = 0.00,
+            semTotal = 0.00;
+
+        for(let a = 0; a < length; a++){
+            chrome.storage.sync.get([semsync[a]], (response) => {
+                let units = response[semsync[a]]['data']['details']['units'];
+                let finalGrade = response[semsync[a]]['data']['finals'];
+
+                if(finalGrade != "No Grades Posted yet."){
+                    finalGrade = parseFloat(finalGrade);
+
+                    semTotal += parseFloat((finalGrade * units).toFixed(2));
+                    unitsTotal += (units);
+                    
+                    overall.innerHTML = (parseFloat(semTotal)/ parseFloat(unitsTotal)).toFixed(2);
+                }
+            });
+        }
+    }
+    
     function validate(input){
         let output = true;
     
@@ -32,16 +55,14 @@ window.onload = () => {
 
         if(validate(response.semesters)){
             insync.innerHTML = response.semsync.length + "/" + response.semesters.length;
+            overallGrade(response.semsync);
         }
         
-        console.log(response.semview);
         if(validate(response.semview)){
             let currentsemview = response.semview;
 
             chrome.storage.sync.get([currentsemview], (response) => {
                 let finals = response[currentsemview]['data']['finals'];
-                console.log(response[currentsemview]);
-                console.log(finals);
 
                 if(finals == "No Grades Posted yet."){
                     semestral.innerHTML = finals;
