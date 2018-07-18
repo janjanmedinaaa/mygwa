@@ -2,7 +2,7 @@ console.log("background running");
 function notif(title, message){
     var params = {
         type: "basic",
-        iconUrl: "../assets/notif_icon2.png",
+        iconUrl: "../assets/notif_icon_v2_2.png",
         title: title,
         message: message
     }

@@ -1,12 +1,12 @@
 {
     "manifest_version": 2,
-    "name": "MyUSTe Extension",
+    "name": "GWA Calculator Extension",
     "version": "1.0",
     "permissions": ["tabs", "storage", "notifications"],
     "browser_action": {
-        "default_icon": "assets/icon_grey.png",
+        "default_icon": "assets/icon_v2_grey.png",
         "default_popup": "popup/index.html",
-        "default_title": "MyUSTe Extension"
+        "default_title": "GWA Calculator Extension"
     },
     "content_scripts": [
         {
