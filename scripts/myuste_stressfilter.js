@@ -60,24 +60,24 @@ function filter(prelim, final){
         prelim.innerHTML = "PASSED";
         prelim.style.color = "green";
     }
-    else if(prelim.innerHTML === "&nbsp;"){
-        prelim.innerHTML = "NO GRADE";
-    }
-    else{
+    else if(parseInt(prelim.innerHTML) < 75){
         prelim.innerHTML = "FAILED";
         prelim.style.color = "red";
+    }
+    else{
+        prelim.innerHTML = "NO GRADE";
     }
 
     if(parseFloat(final.innerHTML) <= 3.0){
         final.innerHTML = "PASSED";
         final.style.color = "green";
     }
-    else if(final.innerHTML === "&nbsp;"){
-        final.innerHTML = "NO GRADE";
+    else if(parseFloat(prelim.innerHTML) > 3.0){
+        prelim.innerHTML = "FAILED";
+        prelim.style.color = "red";
     }
     else{
-        final.innerHTML = "FAILED";
-        final.style.color = "red";
+        prelim.innerHTML = "NO GRADE";
     }
 }
 

@@ -1,8 +1,7 @@
-console.log("background running");
 function notif(title, message){
     var params = {
         type: "basic",
-        iconUrl: "../assets/notif_icon_v2_2.png",
+        iconUrl: "../assets/notif_icon_v3_2.png",
         title: title,
         message: message
     }
@@ -11,7 +10,7 @@ function notif(title, message){
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if(message.type == "notification" || message.type == "icon_notification"){
+    if(message.type == "notification"){
         notif(message.title, message.message);
     }
 });
