@@ -22,7 +22,7 @@ body {
 
 .header-container > img{
     height: 40px;
-    width: 90px;
+    width: 105px;
     margin: 15px;
 }
 
@@ -91,9 +91,17 @@ body {
     display: flex;
     flex: .5;
     align-items: center;
-    justify-content: flex-end;
-    padding: 5px;
+    justify-content: space-between;
+    padding: 10px;
+    padding-left: 15px;
 }
+
+.footer-container > button {
+    background-color: transparent;
+    border: transparent;
+    font-weight: bold;
+}
+
 .switch {
     position: relative;
     display: inline-block;

@@ -80,6 +80,7 @@ window.addEventListener('load', () => {
     var switchToggle = document.getElementById('switch');
     var urlImageInput = document.getElementById('urlimage');
     var image = document.getElementById('profile-picture');
+    var clearData = document.getElementById('clear-data');
 
     var params = {
         active: true,
@@ -116,7 +117,7 @@ window.addEventListener('load', () => {
         chrome.storage.sync.get(['data'], (response) => {
             response['data']['image'] = input;
             var msg = {
-                type: "icon_notification",
+                type: "notification",
                 title: "Icon Changed",
                 message: "Your look good here!"
             }
@@ -125,5 +126,16 @@ window.addEventListener('load', () => {
             chrome.storage.sync.set({data: response.data});
             image.src = input;
         });
+    }
+
+    clearData.onclick = function() {
+        var msg = {
+            type: "notification",
+            title: "Data Cleared",
+            message: "Your data has been successful removed."
+        }
+
+        chrome.runtime.sendMessage(msg);
+        chrome.storage.sync.clear();
     }
 })
